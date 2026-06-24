@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+
+<div data-th-fragment="menu" class="space-y-4" th:fragment="menu" id="menu"
+     hx-get="/layout/menu-atualizado" hx-trigger="atualizarAuth from:body" hx-target="this">
+
+  <!-- 1o Item Menu -->
+  <div x-data="{ open: false }">
+    <button th:replace="~{components/menu-item-button :: menu-item-button('Produto', ~{::#produto-icon})}"></button>
+
+    <!-- Opcoes do 1o Item Menu -->
+    <div x-show="open" class="space-y-4 ps-10">
+      <!-- 1a Opcao -->
+      <div
+              th:replace="~{components/menu-item-option :: menu-item-option('Cadastrar', @{/produto/cadastrar}, ~{::#cadastrar-icon})}">
+      </div>
+      <!-- 2a Opcao -->
+      <div
+              th:replace="~{components/menu-item-option :: menu-item-option('Pesquisar', @{/produto/abrirpesquisar}, ~{::#pesquisar-icon})}">
+      </div>
+    </div>
+  </div>
+
+  <!-- 2o Item Menu -->
+  <div x-data="{ open: false }">
+    <button th:replace="~{components/menu-item-button :: menu-item-button('Cliente', ~{::#pessoa-icon})}"></button>
+
+    <!-- Opcoes do 2o Item Menu -->
+    <div x-show="open" class="space-y-4 ps-10">
+      <!-- 1a Opcao -->
+      <div
+              th:replace="~{components/menu-item-option :: menu-item-option('Cadastrar', @{/cliente/cadastrar}, ~{::#cadastrar-icon})}">
+      </div>
+      <!-- 2a Opcao -->
+      <div
+              th:replace="~{components/menu-item-option :: menu-item-option('Pesquisar', @{/cliente/abrirpesquisar}, ~{::#pesquisar-icon})}">
+      </div>
+    </div>
+  </div>
+
+  <!-- 3o Item Menu -->
+  <div x-data="{ open: false }">
+    <button th:replace="~{components/menu-item-button :: menu-item-button('Pedido', ~{::#aplicacao-icon})}"></button>
+
+    <!-- Opcoes do 3o Item Menu -->
+    <div x-show="open" class="space-y-4 ps-10">
+      <!-- 1a Opcao -->
+      <div th:replace="~{components/menu-item-option :: menu-item-option('Cadastrar', @{/pedido/cadastrar}, ~{::#cadastrar-icon})}">
+      </div>
+      <!-- 2a Opcao -->
+      <div th:replace="~{components/menu-item-option :: menu-item-option('Pesquisar', @{/pedido/abrirpesquisar}, ~{::#pesquisar-icon})}">
+      </div>
+    </div>
+  </div>
+
+  <!-- 4o Item Menu -->
+  <div x-data="{ open: false }" sec:authorize="hasRole('ROLE_ADMIN')">
+    <button
+            th:replace="~{components/menu-item-button :: menu-item-button('Relatórios', ~{::#relatorios-icon})}"></button>
+
+    <!-- Opcoes do 1o Item Menu -->
+    <div x-show="open" class="space-y-4 ps-10">
+      <!-- 1a Opcao -->
+      <div class="flex items-center hover:text-white">
+        <!-- Imagem -->
+        <svg th:replace="~{::#pdf-icon}"></svg>
+        <!-- Texto -->
+        <a th:href="@{/relatorios/todospedidos}" class="cursor-pointer px-2 text-gray-400 hover:text-white">Pedidos
+          Completo</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5o Item Menu -->
+  <div x-data="{ open: false }">
+    <button @click="open = !open"
+            class="flex w-48 cursor-pointer items-center justify-between py-3 text-gray-400 hover:text-white focus:outline-none">
+      <span class="flex items-center">
+        <!-- Imagem -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+             class="bi bi-person-raised-hand" viewBox="0 0 16 16">
+          <path
+                  d="M6 6.207v9.043a.75.75 0 0 0 1.5 0V10.5a.5.5 0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 0 0 0-3-3H6.236a1 1 0 0 1-.447-.106l-.33-.165A.83.83 0 0 1 5 2.488V.75a.75.75 0 0 0-1.5 0v2.083c0 .715.404 1.37 1.044 1.689L5.5 5c.32.32.5.754.5 1.207" />
+          <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
+        </svg>
+        <!-- Texto -->
+        <span class="ms-2">Usuários</span>
+      </span>
+
+      <!-- Seta direito/baixo -->
+      <span>
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path x-show="! open" d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" style="display: none"></path>
+          <path x-show="open" d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+        </svg>
+      </span>
+    </button>
+
+    <!-- Opcoes do 5o Item Menu -->
+    <div x-show="open" class="space-y-4 ps-10">
+      <!-- 1a Opcao -->
+      <div class="flex items-center hover:text-white">
+        <!-- Imagem -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill"
+             viewBox="0 0 16 16">
+          <path
+                  d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z" />
+        </svg>
+        <!-- Texto -->
+        <a th:hx-get="@{/usuario/cadastrar}" hx-target="#main" hx-swap="outerHTML" hx-push-url="true"
+           class="cursor-pointer px-2 text-gray-400 hover:text-white">Cadastrar</a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- TESTE -->
+  <div x-data="{ open: false }" sec:authorize="hasRole('ROLE_ADMIN')">
+    <button @click="open = !open"
+            class="flex w-48 cursor-pointer items-center justify-between py-3 text-gray-400 hover:text-white focus:outline-none">
+      <span class="flex items-center">
+        <!-- Imagem -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+             class="bi bi-person-raised-hand" viewBox="0 0 16 16">
+          <path
+                  d="M6 6.207v9.043a.75.75 0 0 0 1.5 0V10.5a.5.5 0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 0 0 0-3-3H6.236a1 1 0 0 1-.447-.106l-.33-.165A.83.83 0 0 1 5 2.488V.75a.75.75 0 0 0-1.5 0v2.083c0 .715.404 1.37 1.044 1.689L5.5 5c.32.32.5.754.5 1.207" />
+          <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
+        </svg>
+        <!-- Texto -->
+        <span class="ms-2">Teste</span>
+      </span>
+
+      <!-- Seta direito/baixo -->
+      <span>
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path x-show="! open" d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" style="display: none"></path>
+          <path x-show="open" d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+        </svg>
+      </span>
+    </button>
+
+    <!-- Opcoes do 6o Item Menu -->
+    <div x-show="open" class="space-y-4 ps-10">
+      <!-- 1a Opcao -->
+      <div class="flex items-center hover:text-white">
+        <!-- Imagem -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill"
+             viewBox="0 0 16 16">
+          <path
+                  d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z" />
+        </svg>
+        <!-- Texto -->
+        <a th:hx-get="@{/teste/cadastrar}" hx-target="#main" hx-swap="outerHTML" hx-push-url="true"
+           class="cursor-pointer px-2 text-gray-400 hover:text-white">Cadastrar</a>
+      </div>
+      <!-- 2a Opcao -->
+      <div class="flex items-center hover:text-white">
+        <!-- Imagem -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill"
+             viewBox="0 0 16 16">
+          <path
+                  d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z" />
+        </svg>
+        <!-- Texto -->
+        <a th:hx-get="@{/teste/pesquisar}" hx-target="#main" hx-swap="outerHTML" hx-push-url="true"
+           class="cursor-pointer px-2 text-gray-400 hover:text-white">Pesquisar</a>
+      </div>
+
+      <!-- 3a Opcao -->
+      <div class="flex items-center hover:text-white">
+        <!-- Imagem -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-archive-fill"
+             viewBox="0 0 16 16">
+          <path
+                  d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z" />
+        </svg>
+        <!-- Texto -->
+        <a th:hx-get="@{/teste/alterar}" hx-target="#main" hx-swap="outerHTML" hx-push-url="true"
+           class="cursor-pointer px-2 text-gray-400 hover:text-white">Alterar</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<svg id="pessoa-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+     class="bi bi-person-raised-hand" viewBox="0 0 16 16">
+  <path
+          d="M6 6.207v9.043a.75.75 0 0 0 1.5 0V10.5a.5.5 0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 0 0 0-3-3H6.236a1 1 0 0 1-.447-.106l-.33-.165A.83.83 0 0 1 5 2.488V.75a.75.75 0 0 0-1.5 0v2.083c0 .715.404 1.37 1.044 1.689L5.5 5c.32.32.5.754.5 1.207" />
+  <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
+</svg>
+
+<svg id="pesquisar-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+     class="bi bi-search" viewBox="0 0 16 16">
+  <path
+          d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+</svg>
+
+<svg id="cadastrar-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+     class="bi bi-archive-fill" viewBox="0 0 16 16">
+  <path
+          d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z" />
+</svg>
+
+<svg id="aplicacao-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+     class="bi bi-receipt" viewBox="0 0 16 16">
+  <path
+          d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0L11 1.293l.646-.647a.5.5 0 0 1 .708 0L13 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .79.6l-1.06 3.5a.5.5 0 0 1-.474.354H1.598a.5.5 0 0 1-.474-.354L.064.96a.5.5 0 0 1 .354-.618.5.5 0 0 1 .502.164" />
+  <path d="M3 4.5h10v8.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zM5 7h6v1H5zm0 2h6v1H5z" />
+</svg>
+
+<svg id="relatorios-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+     class="bi bi-file-bar-graph-fill" viewBox="0 0 16 16">
+  <path
+          d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2m-2 11.5v-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5m-2.5.5a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5zm-3 0a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5z" />
+</svg>
+
+<svg id="produto-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+     class="bi bi-cup-hot-fill" viewBox="0 0 16 16">
+  <path
+          d="M.5 6a.5.5 0 0 0-.488.608l1.652 7.434A2.5 2.5 0 0 0 4.1 16h5.8a2.5 2.5 0 0 0 2.44-1.958l.131-.59a3 3 0 0 0 1.07-5.327l.067-.301a.5.5 0 0 0-.488-.608zM13 6.5a2 2 0 0 1-.4 3.85l-.741.166.31-1.4a.5.5 0 0 0-.978-.217l-.31 1.4-.557 2.504A1.5 1.5 0 0 1 9.9 15H4.1a1.5 1.5 0 0 1-1.465-1.175L1.225 7.5H13z" />
+  <path d="M5.5 0a.5.5 0 0 1 .5.5c0 .538.276.92.797 1.541.541.643 1.203 1.43 1.203 2.459 0 .526-.246.974-.83.974-.524 0-.708-.448-.708-.974C6.462 3.474 6 3.07 5.5 2.5c-.5.57-.962.974-.962 1.5 0 .526-.184.974-.708.974-.584 0-.83-.448-.83-.974 0-1.029.662-1.816 1.203-2.459C4.724 1.42 5 .538 5 .5a.5.5 0 0 1 .5-.5" />
+</svg>
+
+<svg id="pdf-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+     class="bi bi-file-richtext-fill" viewBox="0 0 16 16">
+  <path
+          d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M7 4.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m-.861 1.542 1.33.886 1.854-1.855a.25.25 0 0 1 .289-.047l1.888.974V7.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V7s1.54-1.274 1.639-1.208M5 9h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1" />
+</svg>
+
+</html>

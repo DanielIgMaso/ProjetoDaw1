@@ -1,0 +1,11 @@
+<th:block th:fragment="lista" xmlns:th="http://www.thymeleaf.org">
+    <li th:if="${#lists.isEmpty(clientes)}" class="p-2 text-gray-500 italic cursor-default pointer-events-none">
+        Nenhum cliente encontrado.
+    </li>
+
+    <li th:each="cliente : ${clientes}" class="p-2 hover:bg-gray-100 cursor-pointer"
+        th:data-value="${cliente.codigo}"
+        th:data-text="${cliente.nome}"
+        th:text="${cliente.nome} + ' - ' + ${cliente.cpf}">
+    </li>
+</th:block>

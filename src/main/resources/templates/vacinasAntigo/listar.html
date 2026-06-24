@@ -1,0 +1,11 @@
+<th:block th:fragment="lista" xmlns:th="http://www.thymeleaf.org">
+    <li th:if="${#lists.isEmpty(vacinas)}" class="p-2 text-gray-500 italic cursor-default pointer-events-none">
+        Nenhuma pessoa encontrada.
+    </li>
+
+    <li th:each="vacina : ${vacinas}" class="p-2 hover:bg-gray-100 cursor-pointer" 
+        th:data-value="${vacina.codigo}" 
+        th:data-text="${vacina.nome}" 
+        th:text="${vacina.nome}">
+    </li>
+</th:block>

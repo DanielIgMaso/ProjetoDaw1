@@ -1,0 +1,11 @@
+<th:block th:fragment="lista" xmlns:th="http://www.thymeleaf.org">
+    <li th:if="${#lists.isEmpty(produtos)}" class="p-2 text-gray-500 italic cursor-default pointer-events-none">
+        Nenhum produto encontrado.
+    </li>
+
+    <li th:each="produto : ${produtos}" class="p-2 hover:bg-gray-100 cursor-pointer"
+        th:data-value="${produto.codigo}"
+        th:data-text="${produto.nome}"
+        th:text="${produto.nome + ' - R$ ' + #numbers.formatDecimal(produto.preco, 1, 2, 'POINT').replace('.', ',')}">
+    </li>
+</th:block>

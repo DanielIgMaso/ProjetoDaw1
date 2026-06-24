@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR" layout:decorate="~{layout/layoutpadrao}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <title>Pesquisa de Aplicações</title>
+</head>
+
+<body>
+  <!-- conteudo principal -->
+  <main layout:fragment="conteudo" th:fragment="tabela" id="main" class="flex flex-col align-middle w-full m-10">
+  
+    <h1 th:if="${pagina.vazia}" class="text-2xl md:text-4xl text-center">A pesquisa não retornou aplicações</h1>
+
+    <div th:if="${not pagina.vazia}" class="flex flex-col ml-10 mr-10 mt-5">
+      <div class="overflow-x-auto">
+        <div class="min-w-full inline-block align-middle">
+          <div class="border rounded-xl overflow-hidden shadow">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th:block th:replace="~{components/paginacao :: coluna(${pagina}, 'codigo', 'Código', '')}"></th:block> 
+                  <th:block th:replace="~{components/paginacao :: coluna(${pagina}, 'data', 'Data', '')}"></th:block> 
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Pessoa</th>
+                  <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Lote</th>
+                  <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Ação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="aplicacao : ${pagina.conteudo}" class="odd:bg-white even:bg-gray-100 hover:bg-gray-200">
+                  <td th:text="${aplicacao.codigo}" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">John Brown</td>
+                  <td th:text="${{aplicacao.data}}" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">John Brown</td>
+                  <td th:text="${aplicacao.pessoa.nome}" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">John Brown</td>
+                  <td th:text="${aplicacao.lote.vacina.nome} + ' - ' + ${{aplicacao.lote.validade}} + ' - ' + ${aplicacao.lote.nroDosesAtual}" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">John Brown</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
+                    <a th:hx-get="@{/aplicacao/remover/{codigo}(codigo = ${aplicacao.codigo})}" th:hx-confirm="${'Você vai remover a aplicação ' + aplicacao.codigo + '!'}" class="cursor-pointer text-red-600 hover:text-red-500 decoration-2 hover:underline focus:outline-hidden focus:underline">Remover</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div th:replace="~{components/paginacao :: paginacao(${pagina})}"></div> 
+        </div>
+      </div>
+    </div>
+
+  </main>
+  <!-- !conteudo principal -->
+</body>
+
+</html>
