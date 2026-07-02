@@ -31,21 +31,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer -> configurer
-                
-                .requestMatchers("/favicon.ico", "/css/**", "/js/**", "/images/**", "/",
-                        "/index.html")
-                .permitAll()
-                
-                
+
+                        .requestMatchers("/favicon.ico", "/css/**", "/js/**", "/images/**", "/",
+                                "/index.html", "/login", "/login-error",
+                                "/layout/header-atualizado", "/layout/menu-atualizado")
+                        .permitAll()
+
+
                         .requestMatchers("/produto/cadastrar").hasRole("ADMIN")
                         .requestMatchers("/usuario/cadastrar").hasRole("ADMIN")
                         .requestMatchers("/relatorios/todospedidos").hasRole("ADMIN")
-                .anyRequest().permitAll()).formLogin(form -> form
-                        
+                        .anyRequest().authenticated()).formLogin(form -> form
+
                         .loginPage("/login")
-                        
+
                         .defaultSuccessUrl("/index.html").successHandler(successHandler())
-                        
+
                         .permitAll())
                 .logout(logout -> logout.logoutUrl("/logout")
                         .logoutSuccessHandler((request, response, authentication) -> {
@@ -67,14 +68,14 @@ public class SecurityConfig {
 
     private AuthenticationSuccessHandler successHandler() {
         return (request, response, authentication) -> {
-            String targetUrl = "/index.html"; 
+            String targetUrl = "/index.html";
             boolean isDeepLink = false;
             RequestCache requestCache = new HttpSessionRequestCache();
             SavedRequest savedRequest = requestCache.getRequest(request, response);
             if (savedRequest != null) {
                 targetUrl = savedRequest.getRedirectUrl();
-                requestCache.removeRequest(request, response); 
-                isDeepLink = true; 
+                requestCache.removeRequest(request, response);
+                isDeepLink = true;
             }
             if (isDeepLink) {
                 String hxLocationPayload = String
@@ -103,10 +104,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
 
-        
-        
-        
-        
+
+
+
+
         String idEnconder = "argon2";
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         encoders.put("argon2", Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8());
@@ -122,7 +123,7 @@ final class SpaCsrfTokenRequestHandler implements CsrfTokenRequestHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
-            Supplier<CsrfToken> csrfToken) {
+                       Supplier<CsrfToken> csrfToken) {
         this.xor.handle(request, response, csrfToken);
         csrfToken.get();
     }
