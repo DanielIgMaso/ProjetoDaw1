@@ -64,15 +64,4 @@ public class UsuarioController {
 			return "redirect:/usuario/cadastrar";
 		}
 	}
-	
-	// @GetMapping("/cadastrosucesso")
-	// public String mostrarCadastroSucesso(String mensagem, Usuario usuario, Model model) {
-	// 	List<Papel> papeis = papelRepository.findAll();
-	// 	model.addAttribute("todosPapeis", papeis);
-	// 	if (mensagem != null && !mensagem.isEmpty()) {
-    //         model.addAttribute("notificacaoSA2", new NotificacaoSweetAlert2(mensagem,
-    //                 TipoNotificaoSweetAlert2.SUCCESS, 4000));
-    //     }
-	// 	return "usuario/cadastrar :: formulario";
-	// }
 }

@@ -31,27 +31,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer -> configurer
-                // Qualquer um pode fazer requisições para essas URLs
+                
                 .requestMatchers("/favicon.ico", "/css/**", "/js/**", "/images/**", "/",
                         "/index.html")
                 .permitAll()
-                // Um usuário autenticado e com o papel ADMIN pode fazer requisições para
-                // essas URLs
+                
+                
                         .requestMatchers("/produto/cadastrar").hasRole("ADMIN")
                         .requestMatchers("/usuario/cadastrar").hasRole("ADMIN")
                         .requestMatchers("/relatorios/todospedidos").hasRole("ADMIN")
-                // .requestMatchers("URL").hasAnyRole("ADMIN", // "USUARIO")
                 .anyRequest().permitAll()).formLogin(form -> form
-                        // Uma página de login customizada
+                        
                         .loginPage("/login")
-                        // Define a URL para onde o usuário será redirecionado após o login
+                        
                         .defaultSuccessUrl("/index.html").successHandler(successHandler())
-                        // Define a URL para o caso de falha no login
-                        // .failureUrl("/login-error")
+                        
                         .permitAll())
                 .logout(logout -> logout.logoutUrl("/logout")
-                        // .logoutSuccessHandler((_, response, _) -> response
-                        // .addHeader("HX-Redirect", "/"))
                         .logoutSuccessHandler((request, response, authentication) -> {
                             if ("true".equals(request.getHeader("HX-Request"))) {
                                 response.addHeader("HX-Trigger", "atualizarAuth");
@@ -65,21 +61,20 @@ public class SecurityConfig {
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .csrf((csrf) -> csrf
-                        // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()));
         return http.build();
     }
 
     private AuthenticationSuccessHandler successHandler() {
         return (request, response, authentication) -> {
-            String targetUrl = "/index.html"; // Default para login padrão
+            String targetUrl = "/index.html"; 
             boolean isDeepLink = false;
             RequestCache requestCache = new HttpSessionRequestCache();
             SavedRequest savedRequest = requestCache.getRequest(request, response);
             if (savedRequest != null) {
                 targetUrl = savedRequest.getRedirectUrl();
-                requestCache.removeRequest(request, response); // Limpa o cache
-                isDeepLink = true; // Marca que recuperamos uma navegação anterior
+                requestCache.removeRequest(request, response); 
+                isDeepLink = true; 
             }
             if (isDeepLink) {
                 String hxLocationPayload = String
@@ -107,20 +102,15 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
-        // Usar um PasswordEncoder que aceite todos os esquemas disponiveis no Spring
-        // Security
-        // mas escolhendo quais vamos aceitar. As senhas comecam dizendo qual o esquema
-        // usado {noop}, {bcrypt}, {argon2}
+        
+        
+        
+        
         String idEnconder = "argon2";
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         encoders.put("argon2", Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8());
         encoders.put("noop", NoOpPasswordEncoder.getInstance());
-        // encoders.put("bcrypt", new BCryptPasswordEncoder());
-        // encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
-        // encoders.put("scrypt", new SCryptPasswordEncoder());
-        // encoders.put("sha256", new StandardPasswordEncoder());
         PasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(idEnconder, encoders);
         return passwordEncoder;
     }
@@ -128,31 +118,17 @@ public class SecurityConfig {
 }
 
 final class SpaCsrfTokenRequestHandler implements CsrfTokenRequestHandler {
-    // private final CsrfTokenRequestHandler plain = new
-    // CsrfTokenRequestAttributeHandler();
     private final CsrfTokenRequestHandler xor = new XorCsrfTokenRequestAttributeHandler();
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
             Supplier<CsrfToken> csrfToken) {
-        // Always use XorCsrfTokenRequestAttributeHandler to provide BREACH protection
-        // of the CsrfToken when it is rendered in the response body.
         this.xor.handle(request, response, csrfToken);
-        // Render the token value to a cookie by causing the deferred token to be
-        // loaded.
         csrfToken.get();
     }
 
     @Override
     public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
-        // String headerValue = request.getHeader(csrfToken.getHeaderName());
-        // return (StringUtils.hasText(headerValue) ? this.plain :
-        // this.xor).resolveCsrfTokenValue(request, csrfToken);
-        // Essa lógica original assume que o frontend leu o cookie cru e enviou no
-        // header.
-        // Mas, no seu caso, o HTMX está lendo o header de resposta (que o Spring já
-        // mascarou) e enviando de volta. Portanto, precisamos usar o 'this.xor' para
-        // desmascarar.
         return this.xor.resolveCsrfTokenValue(request, csrfToken);
     }
 }

@@ -22,6 +22,7 @@ import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.type.HorizontalTextAlignEnum;
 import org.springframework.stereotype.Component;
+import net.sf.jasperreports.engine.design.JRDesignGroup;
 
 @Component
 public class RelatorioPedidosBuilder {
@@ -53,6 +54,7 @@ public class RelatorioPedidosBuilder {
 
         design.addStyle(criarEstilo("normal", 9f, false, true));
         design.addStyle(criarEstilo("negrito", 9f, true, false));
+        design.addStyle(criarEstilo("nomeCliente", 12f, true, false));
 
         // Parâmetro recebido do relatório mestre: código do pedido atual
         JRDesignParameter parametroCodigoPedido = new JRDesignParameter();
@@ -114,6 +116,7 @@ public class RelatorioPedidosBuilder {
         design.addStyle(criarEstilo("normal", 10f, false, true));
         design.addStyle(criarEstilo("negrito", 10f, true, false));
         design.addStyle(criarEstilo("titulo", 18f, true, false));
+        design.addStyle(criarEstilo("nomeCliente", 12f, true, false));
 
         // Parâmetro recebido do código Java: o subreport já compilado
         JRDesignParameter parametroSubreport = new JRDesignParameter();
@@ -127,7 +130,7 @@ public class RelatorioPedidosBuilder {
                         + "FROM pedido ped "
                         + "JOIN cliente cli ON cli.codigo = ped.codigo_cliente "
                         + "WHERE ped.status = 'ATIVO' "
-                        + "ORDER BY ped.data DESC, ped.codigo DESC");
+                        + "ORDER BY cli.nome ASC, ped.data DESC, ped.codigo DESC");
         design.setQuery(query);
 
         design.addField(criarField("codigo", Long.class));
@@ -140,18 +143,34 @@ public class RelatorioPedidosBuilder {
         title.addElement(criarTextoEstatico("Relatório de Pedidos", 0, 0, 535, 30, "titulo", HorizontalTextAlignEnum.LEFT));
         design.setTitle(title);
 
+        // Grupo: um cabeçalho por cliente, reunindo todos os pedidos dele
+        JRDesignGroup grupoCliente = new JRDesignGroup();
+        grupoCliente.setName("GrupoCliente");
+        JRDesignExpression expressaoGrupo = new JRDesignExpression();
+        expressaoGrupo.setText("$F{nome_cliente}");   // campo que define quando muda de grupo
+        grupoCliente.setExpression(expressaoGrupo);
+
+        JRDesignBand cabecalhoGrupo = new JRDesignBand();
+        cabecalhoGrupo.setHeight(26);
+        cabecalhoGrupo.addElement(criarCampoTextoConcatenado("\"Cliente: \" + $F{nome_cliente}",
+                0, 6, 535, 18, "nomeCliente", HorizontalTextAlignEnum.LEFT));
+        ((net.sf.jasperreports.engine.design.JRDesignSection) grupoCliente.getGroupHeaderSection())
+                .addBand(cabecalhoGrupo);
+
+        design.addGroup(grupoCliente);
+
         // Detail: cabeçalho do pedido (código, data, cliente) + subreport de itens
         JRDesignBand detail = new JRDesignBand();
         detail.setHeight(95);
 
         detail.addElement(criarCampoTextoConcatenado("\"Pedido #\" + $F{codigo}", 0, 4, 200, 16, "negrito", HorizontalTextAlignEnum.LEFT));
         detail.addElement(criarCampoTexto("$F{data}", 385, 4, 150, 16, "normal", HorizontalTextAlignEnum.RIGHT, "dd/MM/yyyy"));
-        detail.addElement(criarCampoTextoConcatenado("\"Cliente: \" + $F{nome_cliente}", 0, 20, 535, 16, "normal", HorizontalTextAlignEnum.LEFT));
+        //detail.addElement(criarCampoTextoConcatenado("\"Cliente: \" + $F{nome_cliente}", 0, 20, 535, 16, "normal", HorizontalTextAlignEnum.LEFT));
 
         // Subreport: itens daquele pedido específico
         JRDesignSubreport subreport = new JRDesignSubreport(design);
-        subreport.setX(0);
-        subreport.setY(40);
+        subreport.setX(10);
+        subreport.setY(24);
         subreport.setWidth(495);
         subreport.setHeight(50);
 

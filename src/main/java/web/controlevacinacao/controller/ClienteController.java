@@ -109,18 +109,20 @@ public class ClienteController {
         }
     }
 
+    // DEPOIS (corrigido)
     @GetMapping("/cliente/remover/{codigo}")
     public String remover(@PathVariable Long codigo, RedirectAttributes atributos) {
         Cliente cliente = clienteService.buscar(codigo);
         if (cliente != null) {
             cliente.setStatus(Status.INATIVO);
             clienteService.atualizar(cliente);
-            atributos.addFlashAttribute("mensagem", "Cliente removido com sucesso");
+            atributos.addFlashAttribute("notificacaoSA2", new NotificacaoSweetAlert2(
+                    "Cliente removido com sucesso", TipoNotificaoSweetAlert2.SUCCESS, 4000));
         } else {
-            atributos.addFlashAttribute("mensagem",
-                    "Não foi encontrado um cliente com esse codigo");
+            atributos.addFlashAttribute("notificacaoSA2", new NotificacaoSweetAlert2(
+                    "Não foi encontrado um cliente com esse codigo", TipoNotificaoSweetAlert2.ERROR, 4000));
         }
-        return "redirect:/mensagem";
+        return "redirect:/cliente/abrirpesquisar";
     }
 
 }
